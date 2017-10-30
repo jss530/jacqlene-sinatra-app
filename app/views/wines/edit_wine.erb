@@ -3,6 +3,13 @@
 <h2><%=@wine.producer%></h2>
 <h3><%= @wine.wine_name%></h3>
 
+<% if @error %>
+ <div id="error" style="border: 2px solid red;">
+  <%= @error %>
+  </div>
+<% end %>
+<br>
+
 <form action="/wines/<%= @wine.id %>" method="POST">
   <input id="hidden" type="hidden" name="_method" value="patch">
   <label for="content">Edit Producer:</label>

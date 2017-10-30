@@ -17,6 +17,9 @@ class WineController < ApplicationController
     if !Helpers.is_logged_in?(session)
       redirect('/login')
     else
+      @error = session[:error]
+      session[:error] = nil
+
       erb :'/wines/add_wine'
     end
   end
@@ -27,11 +30,12 @@ class WineController < ApplicationController
     redirect('/login')
   else
     @wine = Wine.find(params[:id])
+
     erb :'/wines/single_wine'
   end
 end
 
-post '/wines' do #pending
+post '/wines' do
   @wine = Wine.new(:producer => params[:producer], :wine_name => params[:wine_name], :vintage => params[:vintage],
   :price => params[:price], :quantity => params[:quantity], :notes => params[:notes])
 
@@ -42,6 +46,7 @@ post '/wines' do #pending
     Helpers.current_user(session).wines << @wine
     redirect to "/wines/#{@wine.id}"
   else
+    session[:error] = "Please enter a producer and quantity."
     redirect('/wines/new')
   end
 end
@@ -76,8 +81,7 @@ delete '/wines/:id/delete' do
 
     if Helpers.current_user(session).wines.include?(@wine)
       @wine.delete
-      #flash message here: wine successfully deleted
-      redirect to '/wines'
+      erb :'/wines/delete_wine'
     else
       redirect to '/wines'
     end

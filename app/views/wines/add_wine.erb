@@ -2,6 +2,12 @@
 
 <h2>Enter your new wine's information below. Producer and Quantity must be filled out. The other fields are optional.</h2>
 
+<% if @error %>
+ <div id="error" style="border: 2px solid red;">
+  <%= @error %>
+  </div>
+<% end %>
+<br>
 <form action="/wines" method="POST">
   <label>Producer:</label>
   <input type="text" name="producer" id="producer"><br>
