@@ -5,7 +5,7 @@ class Helpers
     @user
   end
 
-  def self.is_logged_in?(session = {})
+  def self.is_logged_in?(session)
     if session[:id] != nil
       return true
     else

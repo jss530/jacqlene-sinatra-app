@@ -1,4 +1,7 @@
+require 'rack-flash'
+
 class WineController < ApplicationController
+  use Rack::Flash
 
   get '/wines' do
     if Helpers.is_logged_in?(session)
