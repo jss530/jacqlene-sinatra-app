@@ -34,11 +34,19 @@ end
   end
 
   post '/login' do
+    @user = User.find_by(:username => params[:username])
+      if @user && @user.authenticate(params[:password])
+        session[:user_id] = @user.id
+        redirect('/wines')
+      end
+  end
 
-  @user = User.find_by(:username => params[:username])
-    if @user && @user.authenticate(params[:password])
-      session[:user_id] = @user.id
-      redirect('/wines')
+  get '/logout' do
+    if !Helpers.is_logged_in? #need to correct once working
+      session.clear
+      redirect('/login')
+    else
+      redirect('/')
     end
   end
 
