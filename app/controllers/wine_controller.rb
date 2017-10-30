@@ -10,8 +10,8 @@ class WineController < ApplicationController
     end
   end
 
-  get '/wines/new' do #pending
-    if !Helpers.is_logged_in?(session) #may need to change
+  get '/wines/new' do
+    if !Helpers.is_logged_in?(session)
       redirect('/login')
     else
       erb :'/wines/add_wine'
@@ -20,7 +20,7 @@ class WineController < ApplicationController
 
   get '/wines/:id' do #pending
 
-  if !Helpers.is_logged_in?(session) #may need to change
+  if !Helpers.is_logged_in?(session)
     redirect('/login')
   else
     @wine = Wine.find(params[:id])
@@ -36,7 +36,7 @@ post '/wines' do #pending
     @wine = Wine.create(:producer => params[:producer], :wine_name => params[:wine_name], :vintage => params[:vintage],
     :price => params[:price], :quantity => params[:quantity], :notes => params[:notes])
     @wine.save
-    current_user.wines << @wine
+    Helpers.current_user.wines << @wine
     redirect to "/wines/#{@wine.id}"
   else
     redirect('/wines/new')
@@ -46,10 +46,10 @@ end
 get '/wines/:id/edit' do #pending
   @wine = Wine.find_by(id: params[:id])
 
-  if !Helpers.is_logged_in? #may need to change
+  if !Helpers.is_logged_in?(session)
     redirect('/login')
-  elsif current_user.wines.include?(@wine)
-    erb :'/wines/single_wine'
+  elsif Helpers.current_user.wines.include?(@wine)
+    erb :'/wines/edit_wines'
   else
     redirect('/wines')
   end
@@ -68,10 +68,10 @@ patch '/wines/:id' do #pending
 end
 
 delete '/wines/:id/delete' do #pending
-  if Helpers.is_logged_in? #may need to change
+  if Helpers.is_logged_in?
     @wine = Wine.find_by(id: params[:id])
 
-    if current_user.wines.include?(@wine)
+    if Helpers.current_user.wines.include?(@wine)
       @wine.delete
       redirect to '/wines'
     else

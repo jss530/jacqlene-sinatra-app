@@ -1,0 +1,10 @@
+<h1><%=@wine.producer%></h1>
+<h2><%= @wine.wine_name%></h2>
+<br>
+<h3>Vintage: <%= @wine.vintage%> </h3>
+<h3>Price: <%= @wine.price%> </h3>
+<h3>Quantity:<%= @wine.quantity%> </h3>
+<h3>Notes: <%= @wine.notes%> </h3>
+
+<p><a href="/wines">Go back to my cellar</a></p>
+<p><a href="/wines/:id/edit">Edit/Delete a wine</a></p>

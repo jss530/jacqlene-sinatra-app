@@ -1,15 +1,15 @@
 <h1><%=@user.username.upcase%>'s Wine Cellar in <%=@user.location%>:</h1>
 <br>
 <% @wines.each do |wine| %>
-    <li><%=wine.producer %></li>
-    <li><%=wine.wine_name %></li>
-    <li><%=wine.vintage %></li>
-    <li><%=wine.price %></li>
-    <li><%=wine.quantity %></li>
-    <li><%=wine.notes %></li>
+    <li>Producer: <%=wine.producer %></li>
+    <li>Name: <%=wine.wine_name %></li>
+    <li>Vintage: <%=wine.vintage %></li>
+    <li>Price: <%=wine.price %></li>
+    <li>Quantity: <%=wine.quantity %></li>
+    <li>Tasting Notes: <%=wine.notes %></li>
+    <br>
   <%end%>
 
 <p><a href="/wines/new">Add a wine</a></p>
-<p><a href="/wines/:id/edit">Edit a wine</a></p>
-<p><a href="/wines/:id/delete">Delete a wine</a></p>
-<p><a href="/logout">Log Out</a></p>
+<p><a href="/wines/:id/edit">Edit/Delete a wine</a></p>
+<p><a href="/logout">Log out</a></p>

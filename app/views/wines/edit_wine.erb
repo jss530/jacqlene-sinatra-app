@@ -1,0 +1,27 @@
+<h1> Edit/Delete A Wine</h1>
+
+<h2><%=@wine.producer%></h2>
+<h3><%= @wine.wine_name%></h3>
+
+<form action="/wines/<%= @wine.id %>" method="POST">
+  <input id="hidden" type="hidden" name="_method" value="patch">
+  <label for="content">Edit Producer:</label>
+  <input type="text" name="producer" id="producer" value="<%= @wine.producer %>"><br></br>
+  <label for="content">Edit Name:</label>
+  <input type="text" name="name" id="name" value="<%= @wine.wine_name %>"><br></br>
+  <label for="content">Edit Vintage:</label>
+  <input type="text" name="vintage" id="vintage" value="<%= @wine.vintage %>"><br></br>
+  <label for="content">Edit Price:</label>
+  <input type="text" name="price" id="price" value="<%= @wine.price %>"><br></br>
+  <label for="content">Edit Quantity:</label>
+  <input type="text" name="quantity" id="quantity" value="<%= @wine.quantity %>"><br></br>
+  <label for="content">Edit Tasting Notes:</label>
+  <input type="text" name="notes" id="notes" value="<%= @wine.notes %>"><br></br>
+  <br>
+  <input type="submit" value="Submit">
+</form>
+
+<form method="POST" action="/wines/<%= @wine.id %>/delete">
+  <input id="hidden" type="hidden" name="_method" value="delete">
+  <input type="submit" value="Delete This Wine">
+</form>
