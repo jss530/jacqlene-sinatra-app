@@ -2,8 +2,8 @@ class WineController < ApplicationController
 
   get '/wines' do
     if Helpers.is_logged_in?(session)
-      @user = User.find(session[:user_id])
-      @wines = Wine.all.sort_by {|wine| wine.producer.downcase}
+      @user = User.find(session[:id])
+      @wines = @user.wines.all.sort_by {|wine| wine.producer.downcase}
       erb :'/wines/show_wines'
     else
       redirect('/login')
@@ -18,7 +18,7 @@ class WineController < ApplicationController
     end
   end
 
-  get '/wines/:id' do #pending
+  get '/wines/:id' do
 
   if !Helpers.is_logged_in?(session)
     redirect('/login')
@@ -36,26 +36,26 @@ post '/wines' do #pending
     @wine = Wine.create(:producer => params[:producer], :wine_name => params[:wine_name], :vintage => params[:vintage],
     :price => params[:price], :quantity => params[:quantity], :notes => params[:notes])
     @wine.save
-    Helpers.current_user.wines << @wine
+    Helpers.current_user(session).wines << @wine
     redirect to "/wines/#{@wine.id}"
   else
     redirect('/wines/new')
   end
 end
 
-get '/wines/:id/edit' do #pending
+get '/wines/:id/edit' do
   @wine = Wine.find_by(id: params[:id])
 
   if !Helpers.is_logged_in?(session)
     redirect('/login')
-  elsif Helpers.current_user.wines.include?(@wine)
-    erb :'/wines/edit_wines'
+  elsif Helpers.current_user(session).wines.include?(@wine)
+    erb :'/wines/edit_wine'
   else
     redirect('/wines')
   end
 end
 
-patch '/wines/:id' do #pending
+patch '/wines/:id' do
   @wine = Wine.find_by(id: params[:id])
 
   if @wine.producer != "" && @wine.quantity != ""
@@ -67,12 +67,13 @@ patch '/wines/:id' do #pending
   end
 end
 
-delete '/wines/:id/delete' do #pending
-  if Helpers.is_logged_in?
+delete '/wines/:id/delete' do
+  if Helpers.is_logged_in?(session)
     @wine = Wine.find_by(id: params[:id])
 
-    if Helpers.current_user.wines.include?(@wine)
+    if Helpers.current_user(session).wines.include?(@wine)
       @wine.delete
+      #flash message here: wine successfully deleted
       redirect to '/wines'
     else
       redirect to '/wines'
