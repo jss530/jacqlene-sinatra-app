@@ -10,3 +10,4 @@ Contributors
   Authored by Jacqlene Sifre
 
 License
+  Can be found on this site: https://github.com/jss530/jacqlene-sinatra-app/blob/master/LICENSE.md
