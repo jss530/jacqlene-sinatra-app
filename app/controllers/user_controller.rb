@@ -35,7 +35,7 @@ post '/signup' do
 end
 
   get '/login' do
-    if Helpers.is_logged_in?(session)
+    if is_logged_in?
       redirect('/wines')
     else
       erb :'/users/login'
@@ -54,7 +54,7 @@ end
   end
 
   get '/logout' do
-    if Helpers.is_logged_in?(session)
+    if is_logged_in?
       session.clear
       redirect('/login')
     else

@@ -13,7 +13,7 @@ class WineController < ApplicationController
   end
 
   get '/wines/new' do
-    if !Helpers.is_logged_in?(session)
+    if !is_logged_in?
       redirect('/login')
     else
       @error = session[:error]
@@ -25,10 +25,10 @@ class WineController < ApplicationController
 
   get '/wines/:id' do
 
-  if !Helpers.is_logged_in?(session)
+  if !is_logged_in?
     redirect('/login')
   else
-    @wine = Wine.find(params[:id])
+    @wine = current_user.wines.find_by(id: params[:id])
 
     erb :'/wines/single_wine'
   end
@@ -62,27 +62,33 @@ get '/wines/:id/edit' do
 end
 
 patch '/wines/:id' do
-  @wine = Wine.find_by(id: params[:id])
+  @wine = current_user.wines.find_by(id: params[:id])
 
-  if @wine.producer != "" && @wine.quantity != ""
-    @wine.update(:producer => params[:producer], :wine_name => params[:wine_name], :vintage => params[:vintage],
-    :price => params[:price], :quantity => params[:quantity], :notes => params[:notes])
-    redirect to "/wines/#{@wine.id}"
+  if is_logged_in?
+    if @wine.producer != "" && @wine.quantity != ""
+      @wine.update(:producer => params[:producer], :wine_name => params[:wine_name], :vintage => params[:vintage],
+      :price => params[:price], :quantity => params[:quantity], :notes => params[:notes])
+      redirect to "/wines/#{@wine.id}"
+    else
+      redirect to "/wines/#{@wine.id}/edit"
+    end
   else
-    redirect to "/wines/#{@wine.id}/edit"
+    redirect to '/login'
   end
 end
 
 delete '/wines/:id/delete' do
-  if Helpers.is_logged_in?(session)
-    @wine = Wine.find_by(id: params[:id])
+  if is_logged_in?
+    @wine = current_user.wines.find_by(id: params[:id])
 
-    if Helpers.current_user(session).wines.include?(@wine)
+    if current_user.wines.include?(@wine)
       @wine.delete
       erb :'/wines/delete_wine'
     else
       redirect to '/wines'
     end
+  else
+    redirect to '/login'
  end
 end
 
