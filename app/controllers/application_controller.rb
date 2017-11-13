@@ -3,7 +3,7 @@ require "./app/models/user"
 require "./app/models/wine"
 
 class ApplicationController < Sinatra::Base
-
+  include AuthHelpers
   configure do
     set :public_folder, 'public'
     set :views, 'app/views'

@@ -4,9 +4,8 @@ class WineController < ApplicationController
   use Rack::Flash
 
   get '/wines' do
-    if Helpers.is_logged_in?(session)
-      @user = User.find(session[:id])
-      @wines = @user.wines.all.sort_by {|wine| wine.producer.downcase}
+    if is_logged_in?
+      @wines = current_user.wines.all.sort_by {|wine| wine.producer.downcase}
       erb :'/wines/show_wines'
     else
       redirect('/login')
@@ -36,30 +35,29 @@ class WineController < ApplicationController
 end
 
 post '/wines' do
-  @wine = Wine.new(:producer => params[:producer], :wine_name => params[:wine_name], :vintage => params[:vintage],
-  :price => params[:price], :quantity => params[:quantity], :notes => params[:notes])
-
-  if @wine.producer != "" && @wine.quantity != ""
-    @wine = Wine.create(:producer => params[:producer], :wine_name => params[:wine_name], :vintage => params[:vintage],
+  if is_logged_in?
+    @wine = current_user.wines.build(:producer => params[:producer], :wine_name => params[:wine_name], :vintage => params[:vintage],
     :price => params[:price], :quantity => params[:quantity], :notes => params[:notes])
-    @wine.save
-    Helpers.current_user(session).wines << @wine
-    redirect to "/wines/#{@wine.id}"
+    if @wine.producer != "" && @wine.quantity != "" && @wine.save
+      redirect to "/wines/#{@wine.id}"
+    else
+      session[:error] = "Please enter a producer and quantity."
+      redirect('/wines/new')
+    end
   else
-    session[:error] = "Please enter a producer and quantity."
-    redirect('/wines/new')
+    redirect to '/login'
   end
 end
 
 get '/wines/:id/edit' do
-  @wine = Wine.find_by(id: params[:id])
-
-  if !Helpers.is_logged_in?(session)
-    redirect('/login')
-  elsif Helpers.current_user(session).wines.include?(@wine)
-    erb :'/wines/edit_wine'
+  if is_logged_in?
+    if @wine = current_user.wines.find_by(id: params[:id])
+      erb :'/wines/edit_wine'
+    else
+      redirect to '/wines'
+    end
   else
-    redirect('/wines')
+    redirect to '/login'
   end
 end
 
@@ -89,3 +87,8 @@ delete '/wines/:id/delete' do
 end
 
 end
+
+# TODO:
+# Update your app to ust using the AuthHelpers
+# Make sure your checking for logged in all routes that need a logged in user
+# Make sure that only the owner of the wine can update or delete the wine

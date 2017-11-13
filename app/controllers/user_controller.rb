@@ -4,7 +4,7 @@ class UserController < ApplicationController
   use Rack::Flash
 
 get '/signup' do
-  if Helpers.is_logged_in?(session)
+  if is_logged_in?
     redirect('/wines')
   else
     @error = session[:error]
@@ -15,7 +15,7 @@ get '/signup' do
 end
 
 post '/signup' do
-  @user = User.create(username: params[:username], location: params[:location], password: params[:password])
+  @user = User.new(username: params[:username], location: params[:location], password: params[:password])
 
   if @user.username == ""
     redirect('/signup')
@@ -24,13 +24,13 @@ post '/signup' do
   elsif User.exists?(:username => @user.username)
     session[:error] = "Username already taken. Please try again."
     redirect('/signup')
-  elsif @user.save == false
-    redirect('/signup')
-  else
-    @user.save
-    Helpers.is_logged_in?(session) == true
-    session[:id] = @user.id
+  end
+
+  if @user.save
+    session[:user_id] = @user.id
     redirect('/wines')
+  else
+    redirect('/signup')
   end
 end
 
@@ -46,7 +46,7 @@ end
     user = User.find_by(:username => params[:username])
 
       if user && user.authenticate(params[:password])
-        session[:id] = user.id
+        session[:user_id] = user.id
         redirect('/wines')
       else
         redirect('/signup')

@@ -1,4 +1,4 @@
-<h1><%=@user.username.upcase%>'s Wine Cellar in <%=@user.location%>:</h1>
+<h1><%=current_user.username.upcase%>'s Wine Cellar in <%=current_user.location%>:</h1>
 <br>
 <% @wines.each do |wine| %>
     <li>Producer: <%=wine.producer %></li>
