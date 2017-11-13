@@ -1,5 +1,11 @@
 <h1>Create an account</h1>
 <br>
+<% if @error %>
+ <div id="error" style="border: 2px solid red;">
+  <%= @error %>
+  </div>
+<% end %>
+<br>
 <form method="POST" action="/signup">
   Username: <input type="text" name="username">
   Location: <input type="text" name="location">
